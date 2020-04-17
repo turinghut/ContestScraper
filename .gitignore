@@ -1,0 +1,8 @@
+appenv/
+.env
+
+.vscode/
+
+*.pyc
+instance/
+src/__pycache__/
