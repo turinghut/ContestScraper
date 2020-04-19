@@ -2,9 +2,8 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
-from . import scraper
-
+from .routes import router
+from .config import appConfig
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -12,16 +11,8 @@ migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_mapping(
-        SECRET_KEY=os.environ.get('SECRET_KEY') or 'dev_key',
-        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL'),
-        SQLALCHEMY_TRACK_MODIFICATIONS=False
-    )
-
+    app.config.from_object(appConfig.Config)
     db.init_app(app)
-
     migrate.init_app(app, db)
-
-    app.register_blueprint(scraper.bp)
-
+    app.register_blueprint(router.bluePrint)
     return app
