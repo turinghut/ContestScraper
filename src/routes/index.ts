@@ -1,12 +1,9 @@
 import express from 'express';
+import ApiV1Routes from '../enumerations/api-routes';
 import homeRouter from './home-router';
 
 const router = express.Router();
 
-router.use('/', homeRouter);
-
-router.use((_req, res, _next) => {
-  res.status(404).send("Sorry can't find that!");
-});
+router.route(ApiV1Routes.Home).all(homeRouter);
 
 export default router;

@@ -1,6 +1,6 @@
 enum EnvironmentTypes {
-    Development='development',
-    Production='production'
+  Development = 'development',
+  Production = 'production',
 }
 
 export default EnvironmentTypes;

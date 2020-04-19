@@ -1,3 +1,4 @@
 export interface EnvironmentConfig {
-    port: number;
+  host: string;
+  port: number;
 }
