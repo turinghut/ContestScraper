@@ -14,7 +14,7 @@ app.use(ApiV1Routes.BaseUrl, router);
 app.use(
   ApiV1Routes.SwaggerDocs,
   swaggerUI.serve,
-  swaggerUI.setup(swaggerDocument)
+  swaggerUI.setup(swaggerDocument),
 );
 app.use((_req, res) => {
   res.status(404).send("Sorry can't find that!");
