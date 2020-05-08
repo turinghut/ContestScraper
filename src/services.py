@@ -87,3 +87,25 @@ class ContestsRetreiver:
                     strippedData[3], "%d %b %Y  %H:%M:%S"))
                 contests.append(contest)
         return contests
+
+    def getContestfromCodeforces(self):
+        URL = "http://codeforces.com/contests"
+        soup = bs(req.get(URL).content, 'lxml')
+        allTables = soup.find_all('div', attrs={'class': 'datatable'})
+        presentTables = allTables[0]  # Present table is the first one
+        contests = []
+        allRows = presentTables.find_all('tr')
+        for row in allRows:
+            contest = {}
+            strippedData = []
+            datas = row.find_all('td')
+            for data in datas:
+                strippedData.append(data.text.strip())
+            if(len(strippedData) == 6):
+                contest['name'] = strippedData[0]
+                contest['code'] = strippedData[0].split()[2]
+                contest['start_time'] = str(datetime.strptime(
+                    strippedData[2], "%b/%d/%Y %H:%M"))
+                contest['resource'] = "codeforces"
+                contests.append(contest)
+        return contests
