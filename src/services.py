@@ -1,6 +1,8 @@
 from datetime import datetime
 from .models import Contest
 from PIL import Image, ImageFont, ImageDraw
+from bs4 import BeautifulSoup as bs
+import requests as req
 
 
 class ImageGenerator:
@@ -60,3 +62,28 @@ class ImageGenerator:
             generatedImages.append(image)
             count += 1
         return generatedImages
+
+
+class ContestsRetreiver:
+    def getContestsfromCodechef(self):
+        URL = "https://www.codechef.com/contests"
+        soup = bs(req.get(URL).content, 'lxml')
+        allTables = soup.find_all('table', attrs={'class': 'dataTable'})
+        presentTables = allTables[0]  # Present table is the first one
+        contests = []
+        allRows = presentTables.find_all('tr')
+        for row in allRows:
+            contest = {}
+            strippedData = []
+            datas = row.find_all('td')
+            for data in datas:
+                strippedData.append(data.text.strip())
+            if(len(strippedData) == 4):
+                contest['code'] = strippedData[0]
+                contest['name'] = strippedData[1]
+                contest['start_time'] = str(datetime.strptime(
+                    strippedData[2], "%d %b %Y  %H:%M:%S")),
+                contest['end_time'] = str(datetime.strptime(
+                    strippedData[3], "%d %b %Y  %H:%M:%S"))
+                contests.append(contest)
+        return contests
