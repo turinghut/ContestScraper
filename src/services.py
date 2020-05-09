@@ -72,7 +72,7 @@ class ContestsRetreiver:
         contests = []
         codechefContests = self.getContestsfromCodechef()
         for contest in codechefContests:
-            if(datetime.now().date == parser.parse(contest['start_time']).date):
+            if(datetime.now().date() == parser.parse(contest['start_time']).date()):
                 contestsJson.append(contest)
         codeforcesContests = self.getContestsfromCodeforces()
         for contest in codeforcesContests:
@@ -82,7 +82,7 @@ class ContestsRetreiver:
         for json in contestsJson:
             # self, contestCode, contestName, platform, startDateTime, endDateTime
             contests.append(Contest(
-                json['code'], json['name'], json['resource'], json['start_time'], json['end_time']))
+                json['code'], json['name'], json['resource'], json['start_time'], json['end_time'], json['id']))
         return contests
 
     def getContestsfromCodechef(self):
@@ -109,6 +109,7 @@ class ContestsRetreiver:
                 contest['end_time'] = str(endDate)
                 contest['duration'] = str(endDate - startDate)
                 contest['resource'] = "codechef"
+                contest['id'] = "codechef_"+strippedData[0]
                 contests.append(contest)
         return contests
 
@@ -138,5 +139,6 @@ class ContestsRetreiver:
                 contest['end_time'] = str(startTime + timedelta(
                     hours=tempDate.hour, minutes=tempDate.minute, seconds=tempDate.second))
                 contest['resource'] = "codeforces"
+                contest['id'] = "codeforces_"+strippedData[0].split()[2]
                 contests.append(contest)
         return contests
