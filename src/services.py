@@ -1,69 +1,54 @@
 from datetime import datetime, timedelta
 from dateutil import parser
-from .models import Contest
+# from .models import Contest
 from PIL import Image, ImageFont, ImageDraw
 from bs4 import BeautifulSoup as bs
 import requests as req
 
+from src.models import Contest
+
 
 class ImageGenerator:
-    contests = []
     fontDirectory = "src/resources/fonts/RobotoBlack.ttf"
     storyTemplateDirectory = "src/resources/templates/storyTemplate.jpg"
 
-    def __init__(self):
-        self.getContestDetails()
-
-    def getContestDetails(self):
-        # Get it from Database
-        self.contests.append(Contest('MAY20', 'May Challenge 2020',
-                                     'Codechef.com', '01 MAY 2020 15:00:00', '11 MAY 2020 15:00:00', 'codechef_#641'))
-
-    def generateImages(self):
-        generatedImages = []
+    def generateImage(contest, self):
         MAX_W = 1080
         font = ImageFont.truetype(self.fontDirectory, 50)
         count = 0
-        for i in self.contests:
-            image = Image.open(self.storyTemplateDirectory)
-            draw = ImageDraw.Draw(image)
-            w, h = font.getsize("Platform : " + i.platform)
-            draw.text((((MAX_W - w) / 2), 900), "Platform : " +
-                      i.platform, fill="white", font=font, align="center")
-            w, h = font.getsize("Contest code : " + i.contestCode)
-            draw.text((((MAX_W - w) / 2), 1000), "Contest code : " +
-                      i.contestCode, fill="white", font=font, align="center")
-            font = ImageFont.truetype(self.fontDirectory, 70)
-            w, h = font.getsize(i.contestName)
-            draw.text((((MAX_W - w) / 2), 1150), i.contestName,
-                      fill="white", font=font, align="center")
-            font = ImageFont.truetype(self.fontDirectory, 50)
-            draw.text((150, 1300), "START : ",
-                      fill="white", font=font, align="left")
-            draw.text((400, 1300), i.startDateTime,
-                      fill="white", font=font, align="left")
-            draw.text((150, 1400), "END : ", fill="white",
-                      font=font, align="right")
-            draw.text((400, 1400), i.endDateTime,
-                      fill="white", font=font, align="right")
-            timeDifference = datetime.strptime(
-                i.endDateTime, '%d %b %Y %H:%M:%S') - datetime.strptime(i.startDateTime, '%d %b %Y %H:%M:%S')
-            secondsTaken = timeDifference.total_seconds()
-            hours = divmod(secondsTaken, 3600)[0]
-            secondsTaken = timeDifference.total_seconds()
-            days = divmod(secondsTaken, 86400)[0]
-            if(int(hours) > 24):
-                duration = str(int(days)) + " Days"
-            else:
-                duration = str(int(hours)) + " Hours"
-            w, h = font.getsize("DURATION : " + duration)
-            draw.text((((MAX_W - w) / 2), 1500), "DURATION : " +
-                      str(duration), fill="white", font=font, align="right")
-            # image.save(self.saveLocation + "Image-" + str(count) + ".png")
-            generatedImages.append(image)
-            count += 1
-        return generatedImages
-
+        image = Image.open(self.storyTemplateDirectory)
+        draw = ImageDraw.Draw(image)
+        w, h = font.getsize("Platform : " + contest.platform)
+        draw.text((((MAX_W - w) / 2), 900), "Platform : " +
+        contest.platform, fill="white", font=font, align="center")
+        w, h = font.getsize("Contest code : " + contest.contestCode)
+        draw.text((((MAX_W - w) / 2), 1000), "Contest code : " +
+        contest.contestCode, fill="white", font=font, align="center")
+        font = ImageFont.truetype(self.fontDirectory, 70)
+        w, h = font.getsize(contest.contestName)
+        draw.text((((MAX_W - w) / 2), 1150), contest.contestName,fill="white", font=font, align="center")
+        font = ImageFont.truetype(self.fontDirectory, 50)
+        draw.text((150, 1300), "START : ",fill="white", font=font, align="left")
+        timeDifference = contest.endDateTime - contest.startDateTime
+        contest.startDateTime = str(contest.startDateTime.strftime('%d-%m-%Y %H:%M:%S'))
+        contest.endDateTime = str(contest.endDateTime.strftime('%d-%m-%Y %H:%M:%S'))
+        draw.text((400, 1300), contest.startDateTime,fill="white", font=font, align="left")
+        draw.text((150, 1400), "END : ", fill="white",font=font, align="right")
+        draw.text((400, 1400), contest.endDateTime,fill="white", font=font, align="right")
+        #timeDifference = datetime.datetime.strptime(contest.endDateTime, '%y-%m-%d %H:%M:%S') - datetime.datetime.strptime(contest.startDateTime, '%y-%m-%d %H:%M:%S')
+        secondsTaken = timeDifference.total_seconds()
+        hours = divmod(secondsTaken, 3600)[0]
+        secondsTaken = timeDifference.total_seconds()
+        days = divmod(secondsTaken, 86400)[0]
+        if(int(hours) > 24):
+            duration = str(int(days)) + " Days"
+        else:
+            duration = str(int(hours)) + " Hours"
+        w, h = font.getsize("DURATION : " + duration)
+        draw.text((((MAX_W - w) / 2), 1500), "DURATION : " +str(duration), fill="white", font=font, align="right")
+        # image.save(self.saveLocation + "Image-" + str(count) + ".png")
+        count += 1
+        return image
 
 class ContestsRetreiver:
     def getContestDetails(self):
