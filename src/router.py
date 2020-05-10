@@ -30,7 +30,30 @@ def test():
         return "No Contest"
 
 
+@bluePrint.route('/download', method=['GET', 'POST'])
+def generateImage():
+    imageGenerator = ImageGenerator()
+    if request.method == 'POST':
+        contestJson = request.json
+        if(contestJson != None):
+            contest = Contest.fromJson(contestJson)
+            generatedImage = imageGenerator.generateImage(contest)
+            imageIO = io.BytesIO()
+            generatedImage.save(imageIO, 'JPEG', quality=100)
+            imageIO.seek(0)
+            return send_file(imageIO, mimetype='image/jpeg')
+        else:
+            return "No Contest Provided"
+    else:
+        # get contest from db using param id and send image
+        return "not yet implemented"
+
+
+@bluePrint.route('allcontests')
+def allcontests():
+    return ContestsRetreiver().getAllUpcomingContestDetails()
+
+
 @bluePrint.route('/contests')
-def fun():
-    retriever = ContestsRetreiver()
-    return json.dumps(retriever.getContestDetails())
+def contests():
+    return ContestsRetreiver().getTodaysContestDetails()

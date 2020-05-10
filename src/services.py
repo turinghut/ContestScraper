@@ -60,7 +60,7 @@ class ImageGenerator:
 
 
 class ContestsRetreiver:
-    def getContestDetails(self):
+    def getTodaysContestDetails(self):
         # 2020-05-11 15:00:00
         contestsJson = []
         codechefContests = self.getContestsfromCodechef()
@@ -71,6 +71,17 @@ class ContestsRetreiver:
         for contest in codeforcesContests:
             if(datetime.now().date() == parser.parse(contest['start_time']).date()):
                 contestsJson.append(contest)
+
+        return contestsJson
+
+    def getAllUpcomingContestDetails(self):
+        contestsJson = []
+        codechefContests = self.getContestsfromCodechef()
+        for contest in codechefContests:
+            contestsJson.append(contest)
+        codeforcesContests = self.getContestsfromCodeforces()
+        for contest in codeforcesContests:
+            contestsJson.append(contest)
 
         return contestsJson
 
