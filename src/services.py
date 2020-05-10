@@ -108,7 +108,7 @@ class ContestsRetreiver:
                 contest['start_time'] = str(startDate)
                 contest['end_time'] = str(endDate)
                 contest['duration'] = str(endDate - startDate)
-                contest['resource'] = "codechef"
+                contest['platform'] = "codechef"
                 contest['id'] = "codechef_"+strippedData[0]
                 contests.append(contest)
         return contests
@@ -138,7 +138,7 @@ class ContestsRetreiver:
                     hours=tempDate.hour, minutes=tempDate.minute, seconds=tempDate.second))
                 contest['end_time'] = str(startTime + timedelta(
                     hours=tempDate.hour, minutes=tempDate.minute, seconds=tempDate.second))
-                contest['resource'] = "codeforces"
+                contest['platform'] = "codeforces"
                 contest['id'] = "codeforces_"+strippedData[0].split()[2]
                 contests.append(contest)
         return contests

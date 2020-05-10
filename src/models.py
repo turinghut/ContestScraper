@@ -19,4 +19,4 @@ class Contest:
 
     @classmethod
     def fromJson(cls, contestJson):
-        return cls(contestJson['code'], contestJson['name'], contestJson['resource'], parser.parse(contestJson['start_time']), parser.parse(contestJson['end_time']), contestJson['id'])
+        return cls(contestJson['code'], contestJson['name'], contestJson['platform'], parser.parse(contestJson['start_time']), parser.parse(contestJson['end_time']), contestJson['id'])

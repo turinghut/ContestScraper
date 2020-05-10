@@ -15,7 +15,7 @@ def index():
     return response
 
 
-@bluePrint.route('/download', method=['GET', 'POST'])
+@bluePrint.route('/download', methods=['GET', 'POST'])
 def generateImage():
     imageGenerator = ImageGenerator()
     if request.method == 'POST':
@@ -34,11 +34,13 @@ def generateImage():
         return "not yet implemented"
 
 
-@bluePrint.route('allcontests')
+@bluePrint.route('/allcontests')
 def allcontests():
-    return ContestsRetreiver().getAllUpcomingContestDetails()
+    retriver = ContestsRetreiver()
+    return json.dumps(retriver.getAllUpcomingContestDetails())
 
 
 @bluePrint.route('/contests')
 def contests():
-    return ContestsRetreiver().getTodaysContestDetails()
+    retriver = ContestsRetreiver()
+    return json.dumps(retriver.getTodaysContestDetails())
