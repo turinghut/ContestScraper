@@ -15,21 +15,6 @@ def index():
     return response
 
 
-@bluePrint.route('/download')
-def test():
-    imageGenerator = ImageGenerator()
-    contestJson = request.json
-    if(contestJson != None):
-        contest = Contest.fromJson(contestJson)
-        generatedImage = imageGenerator.generateImage(contest)
-        imageIO = io.BytesIO()
-        generatedImage.save(imageIO, 'JPEG', quality=100)
-        imageIO.seek(0)
-        return send_file(imageIO, mimetype='image/jpeg')
-    else:
-        return "No Contest"
-
-
 @bluePrint.route('/download', method=['GET', 'POST'])
 def generateImage():
     imageGenerator = ImageGenerator()
