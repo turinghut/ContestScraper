@@ -3,7 +3,7 @@ appenv/
 venv/
 
 .vscode/
-
+.idea/
 *.pyc
 config/__pycache__/
 instance/
