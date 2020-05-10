@@ -1,8 +1,8 @@
-from .services import ImageGenerator
+from .services import ImageGenerator, ContestsRetreiver
 from flask import(Blueprint)
 import io
 from flask import send_file
-
+import json
 
 bluePrint = Blueprint('router', __name__)
 
@@ -21,3 +21,9 @@ def test():
     generatedImages[0].save(imageIO, 'JPEG', quality=100)
     imageIO.seek(0)
     return send_file(imageIO, mimetype='image/jpeg')
+
+
+@bluePrint.route('/contests')
+def fun():
+    retriever = ContestsRetreiver()
+    return json.dumps(retriever.getContestDetails())

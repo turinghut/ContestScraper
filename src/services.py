@@ -17,7 +17,7 @@ class ImageGenerator:
     def getContestDetails(self):
         # Get it from Database
         self.contests.append(Contest('MAY20', 'May Challenge 2020',
-                                     'Codechef.com', '01 MAY 2020 15:00:00', '11 MAY 2020 15:00:00'))
+                                     'Codechef.com', '01 MAY 2020 15:00:00', '11 MAY 2020 15:00:00', 'codechef_#641'))
 
     def generateImages(self):
         generatedImages = []
@@ -69,21 +69,16 @@ class ContestsRetreiver:
     def getContestDetails(self):
         # 2020-05-11 15:00:00
         contestsJson = []
-        contests = []
         codechefContests = self.getContestsfromCodechef()
         for contest in codechefContests:
             if(datetime.now().date() == parser.parse(contest['start_time']).date()):
                 contestsJson.append(contest)
         codeforcesContests = self.getContestsfromCodeforces()
         for contest in codeforcesContests:
-            if(datetime.now().date == parser.parse(contest['start_time']).date):
+            if(datetime.now().date() == parser.parse(contest['start_time']).date()):
                 contestsJson.append(contest)
 
-        for json in contestsJson:
-            # self, contestCode, contestName, platform, startDateTime, endDateTime
-            contests.append(Contest(
-                json['code'], json['name'], json['resource'], json['start_time'], json['end_time'], json['id']))
-        return contests
+        return contestsJson
 
     def getContestsfromCodechef(self):
         URL = "https://www.codechef.com/contests"
