@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta
+
 from dateutil import parser
-# from .models import Contest
+from .models import Contest
 from PIL import Image, ImageFont, ImageDraw
 from bs4 import BeautifulSoup as bs
 import requests as req
-
-from src.models import Contest
-
+import textwrap
 
 class ImageGenerator:
     fontDirectory = "src/resources/fonts/RobotoBlack.ttf"
@@ -25,24 +24,26 @@ class ImageGenerator:
         draw.text((((MAX_W - w) / 2), 1000), "Contest code : " +
                   contest.contestCode, fill="white", font=font, align="center")
         font = ImageFont.truetype(self.fontDirectory, 70)
-        w, h = font.getsize(contest.contestName)
-        draw.text((((MAX_W - w) / 2), 1150), contest.contestName,
-                  fill="white", font=font, align="center")
+        lines = textwrap.wrap(contest.contestName, width=25)
+        y_text = 1150
+        for line in lines:
+            width, height = font.getsize(line)
+            draw.text(((MAX_W - width) / 2, y_text), line, font=font, fill="white")
+            y_text += height
         font = ImageFont.truetype(self.fontDirectory, 50)
-        draw.text((150, 1300), "START : ",
+        draw.text((150, y_text+100), "START : ",
                   fill="white", font=font, align="left")
         timeDifference = contest.endDateTime - contest.startDateTime
         contest.startDateTime = str(
             contest.startDateTime.strftime('%d-%m-%Y %H:%M:%S'))
         contest.endDateTime = str(
             contest.endDateTime.strftime('%d-%m-%Y %H:%M:%S'))
-        draw.text((400, 1300), contest.startDateTime,
+        draw.text((400, y_text+100), contest.startDateTime,
                   fill="white", font=font, align="left")
-        draw.text((150, 1400), "END : ", fill="white",
+        draw.text((150, y_text+200), "END : ", fill="white",
                   font=font, align="right")
-        draw.text((400, 1400), contest.endDateTime,
+        draw.text((400, y_text+200), contest.endDateTime,
                   fill="white", font=font, align="right")
-        #timeDifference = datetime.datetime.strptime(contest.endDateTime, '%y-%m-%d %H:%M:%S') - datetime.datetime.strptime(contest.startDateTime, '%y-%m-%d %H:%M:%S')
         secondsTaken = timeDifference.total_seconds()
         hours = divmod(secondsTaken, 3600)[0]
         secondsTaken = timeDifference.total_seconds()
@@ -52,12 +53,9 @@ class ImageGenerator:
         else:
             duration = str(int(hours)) + " Hours"
         w, h = font.getsize("DURATION : " + duration)
-        draw.text((((MAX_W - w) / 2), 1500), "DURATION : " +
+        draw.text((((MAX_W - w) / 2), y_text+300), "DURATION : " +
                   str(duration), fill="white", font=font, align="right")
-        # image.save(self.saveLocation + "Image-" + str(count) + ".png")
-        count += 1
         return image
-
 
 class ContestsRetreiver:
     def getTodaysContestDetails(self):
