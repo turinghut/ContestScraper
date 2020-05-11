@@ -68,7 +68,7 @@ class ContestsRetreiver:
         codeforcesContests = self.getContestsfromCodeforces()
         for contest in codeforcesContests:
             if(datetime.now().date() == parser.parse(contest['start_time']).date()):
-                contestsJson.append(contest)
+                contestsJso.append(contest)
 
         return contestsJson
 
