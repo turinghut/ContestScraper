@@ -43,14 +43,25 @@ class ImageGenerator:
                   font=font, align="right")
         draw.text((400, y_text+200), contest.endDateTime,
                   fill="white", font=font, align="right")
-        secondsTaken = timeDifference.total_seconds()
-        hours = divmod(secondsTaken, 3600)[0]
-        secondsTaken = timeDifference.total_seconds()
-        days = divmod(secondsTaken, 86400)[0]
-        if(int(hours) > 24):
-            duration = str(days) + " Days"
-        else:
-            duration = str(hours) + " Hours"
+        timeDifference = str(timeDifference)
+        duration = ""
+        print(timeDifference)
+        durationList = timeDifference
+        if "days" in timeDifference:
+            daysList = timeDifference.split(" days, ")
+            duration = daysList[0] + " days "
+        if "days" in timeDifference:
+            durationList = timeDifference.split(" days, ")
+            durationList = durationList[1]
+        #print(durationList)
+        durationList = durationList.split(":")
+        print("hi")
+        if(durationList[0] != "00"):
+            duration += str(durationList[0]) + " Hours "
+        if(durationList[1] != "00"):
+            duration += str(durationList[1]) + " Minutes "
+        if(durationList[2] != "00"):
+            duration += str(durationList[2]) + " Seconds"
         w, h = font.getsize("DURATION : " + duration)
         draw.text((((MAX_W - w) / 2), y_text+300), "DURATION : " +
                   str(duration), fill="white", font=font, align="right")
@@ -139,3 +150,4 @@ class ContestsRetreiver:
                 contest['id'] = "codeforces_"+strippedData[0].split()[2]
                 contests.append(contest)
         return contests
+
