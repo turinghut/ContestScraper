@@ -1,17 +1,10 @@
 from datetime import datetime, timedelta
 
-import pytz
-import tzlocal
-# from dateutil.tz import tzlocal
-from pytz import timezone
 from dateutil import parser
-# from .models import Contest
 from PIL import Image, ImageFont, ImageDraw
 from bs4 import BeautifulSoup as bs
 import requests as req
 import textwrap
-from dateutil import tz
-
 
 class ImageGenerator:
     fontDirectory = "src/resources/fonts/RobotoBlack.ttf"
@@ -55,14 +48,13 @@ class ImageGenerator:
         secondsTaken = timeDifference.total_seconds()
         days = divmod(secondsTaken, 86400)[0]
         if(int(hours) > 24):
-            duration = str(int(days)) + " Days"
+            duration = str(days) + " Days"
         else:
-            duration = str(int(hours)) + " Hours"
+            duration = str(hours) + " Hours"
         w, h = font.getsize("DURATION : " + duration)
         draw.text((((MAX_W - w) / 2), y_text+300), "DURATION : " +
                   str(duration), fill="white", font=font, align="right")
         return image
-
 class ContestsRetreiver:
     def getTodaysContestDetails(self):
         # 2020-05-11 15:00:00
