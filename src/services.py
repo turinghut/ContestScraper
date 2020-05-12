@@ -1,11 +1,17 @@
 from datetime import datetime, timedelta
 
+import pytz
+import tzlocal
+# from dateutil.tz import tzlocal
+from pytz import timezone
 from dateutil import parser
-from .models import Contest
+# from .models import Contest
 from PIL import Image, ImageFont, ImageDraw
 from bs4 import BeautifulSoup as bs
 import requests as req
 import textwrap
+from dateutil import tz
+
 
 class ImageGenerator:
     fontDirectory = "src/resources/fonts/RobotoBlack.ttf"
@@ -127,6 +133,7 @@ class ContestsRetreiver:
             if(len(strippedData) == 6):
                 startTime = datetime.strptime(
                     strippedData[2], "%b/%d/%Y %H:%M")
+                startTime = startTime + timedelta(hours=2, minutes=30)
                 contest['name'] = strippedData[0]
                 contest['code'] = strippedData[0].split()[2]
                 contest['start_time'] = str(startTime)
