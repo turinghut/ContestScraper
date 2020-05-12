@@ -1,9 +1,6 @@
 from datetime import datetime, timedelta
 
-import pytz
-import tzlocal
 # from dateutil.tz import tzlocal
-from pytz import timezone
 from dateutil import parser
 # from .models import Contest
 from PIL import Image, ImageFont, ImageDraw
@@ -34,7 +31,8 @@ class ImageGenerator:
         y_text = 1150
         for line in lines:
             width, height = font.getsize(line)
-            draw.text(((MAX_W - width) / 2, y_text), line, font=font, fill="white")
+            draw.text(((MAX_W - width) / 2, y_text),
+                      line, font=font, fill="white")
             y_text += height
         font = ImageFont.truetype(self.fontDirectory, 50)
         draw.text((150, y_text+100), "START : ",
@@ -62,6 +60,7 @@ class ImageGenerator:
         draw.text((((MAX_W - w) / 2), y_text+300), "DURATION : " +
                   str(duration), fill="white", font=font, align="right")
         return image
+
 
 class ContestsRetreiver:
     def getTodaysContestDetails(self):
