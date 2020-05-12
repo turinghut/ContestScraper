@@ -1,13 +1,9 @@
-from datetime import datetime, timedelta
-
-# from dateutil.tz import tzlocal
-from dateutil import parser
-# from .models import Contest
-from PIL import Image, ImageFont, ImageDraw
-from bs4 import BeautifulSoup as bs
-import requests as req
 import textwrap
-from dateutil import tz
+import requests as req
+from bs4 import BeautifulSoup as bs
+from PIL import Image, ImageFont, ImageDraw
+from dateutil import parser
+from datetime import datetime, timedelta
 
 
 class ImageGenerator:
@@ -53,9 +49,9 @@ class ImageGenerator:
         secondsTaken = timeDifference.total_seconds()
         days = divmod(secondsTaken, 86400)[0]
         if(int(hours) > 24):
-            duration = str(int(days)) + " Days"
+            duration = str(days) + " Days"
         else:
-            duration = str(int(hours)) + " Hours"
+            duration = str(hours) + " Hours"
         w, h = font.getsize("DURATION : " + duration)
         draw.text((((MAX_W - w) / 2), y_text+300), "DURATION : " +
                   str(duration), fill="white", font=font, align="right")
