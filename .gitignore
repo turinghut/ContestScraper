@@ -1,8 +1,11 @@
 appenv/
 .env
+venv/
 
 .vscode/
-
+.idea/
 *.pyc
+config/__pycache__/
 instance/
+routes/__pycache__/
 src/__pycache__/
