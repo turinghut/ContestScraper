@@ -13,7 +13,6 @@ class ImageGenerator:
     def generateImage(self, contest):
         MAX_W = 1080
         font = ImageFont.truetype(self.fontDirectory, 50)
-        count = 0
         image = Image.open(self.storyTemplateDirectory)
         draw = ImageDraw.Draw(image)
         w, h = font.getsize("Platform : " + contest.platform)
@@ -96,60 +95,69 @@ class ContestsRetreiver:
         return contestsJson
 
     def getContestsfromCodechef(self):
-        URL = "https://www.codechef.com/contests"
-        soup = bs(req.get(URL).content, 'lxml')
-        allTables = soup.find_all('table', attrs={'class': 'dataTable'})
-        presentTables = allTables[0]  # Present table is the first one
-        contests = []
-        allRows = presentTables.find_all('tr')
-        for row in allRows:
-            contest = {}
-            strippedData = []
-            datas = row.find_all('td')
-            for data in datas:
-                strippedData.append(data.text.strip())
-            if(len(strippedData) == 4):
-                startDate = datetime.strptime(
-                    strippedData[2], "%d %b %Y  %H:%M:%S")
-                endDate = datetime.strptime(
-                    strippedData[3], "%d %b %Y  %H:%M:%S")
-                contest['code'] = strippedData[0]
-                contest['name'] = strippedData[1]
-                contest['start_time'] = str(startDate)
-                contest['end_time'] = str(endDate)
-                contest['duration'] = str(endDate - startDate)
-                contest['platform'] = "codechef"
-                contest['id'] = "codechef_"+strippedData[0]
-                contests.append(contest)
-        return contests
+        try:
+            URL = "https://www.codechef.com/contests"
+            soup = bs(req.get(URL).content, 'lxml')
+            allTables = soup.find_all('table', attrs={'class': 'dataTable'})
+            presentTables = allTables[0]  # Present table is the first one
+            contests = []
+            allRows = presentTables.find_all('tr')
+            for row in allRows:
+                contest = {}
+                strippedData = []
+                datas = row.find_all('td')
+                for data in datas:
+                    strippedData.append(data.text.strip())
+                if(len(strippedData) == 4):
+                    startDate = datetime.strptime(
+                        strippedData[2], "%d %b %Y  %H:%M:%S")
+                    endDate = datetime.strptime(
+                        strippedData[3], "%d %b %Y  %H:%M:%S")
+                    contest['code'] = strippedData[0]
+                    contest['name'] = strippedData[1]
+                    contest['start_time'] = str(startDate)
+                    contest['end_time'] = str(endDate)
+                    contest['duration'] = str(endDate - startDate)
+                    contest['platform'] = "codechef"
+                    contest['id'] = "codechef_"+strippedData[0]
+                    contests.append(contest)
+                    return contests
+        except:
+            print('Error retrieving codechef details')
+            return []
 
     def getContestsfromCodeforces(self):
-        URL = "http://codeforces.com/contests"
-        soup = bs(req.get(URL).content, 'lxml')
-        allTables = soup.find_all('div', attrs={'class': 'datatable'})
-        presentTables = allTables[0]  # Present table is the first one
-        contests = []
-        allRows = presentTables.find_all('tr')
-        for row in allRows:
-            contest = {}
-            strippedData = []
-            datas = row.find_all('td')
-            for data in datas:
-                strippedData.append(data.text.strip())
-            if(len(strippedData) == 6):
-                startTime = datetime.strptime(
-                    strippedData[2], "%b/%d/%Y %H:%M")
-                startTime = startTime + timedelta(hours=2, minutes=30)
-                contest['name'] = strippedData[0]
-                contest['code'] = strippedData[0].split()[2]
-                contest['start_time'] = str(startTime)
-                if(len(strippedData[3]) == 5):
+        try:
+            URL = "http://codeforces.com/contests"
+            soup = bs(req.get(URL).content, 'lxml')
+            allTables = soup.find_all('div', attrs={'class': 'datatable'})
+            presentTables = allTables[0]  # Present table is the first one
+            contests = []
+            allRows = presentTables.find_all('tr')
+            for row in allRows:
+                contest = {}
+                strippedData = []
+                datas = row.find_all('td')
+                for data in datas:
+                    strippedData.append(data.text.strip())
+                if(len(strippedData) == 6):
+                    startTime = datetime.strptime(
+                        strippedData[2], "%b/%d/%Y %H:%M")
+                    startTime = startTime + timedelta(hours=2, minutes=30)
+                    contest['name'] = strippedData[0]
+                    contest['code'] = strippedData[0].split()[2]
+                    contest['start_time'] = str(startTime)
+                    if(len(strippedData[3]) != 5):
+                        strippedData[3] = strippedData[3].split(':', 1)[1]
                     tempDate = datetime.strptime(strippedData[3], "%H:%M")
-                contest['duration'] = str(timedelta(
-                    hours=tempDate.hour, minutes=tempDate.minute, seconds=tempDate.second))
-                contest['end_time'] = str(startTime + timedelta(
-                    hours=tempDate.hour, minutes=tempDate.minute, seconds=tempDate.second))
-                contest['platform'] = "codeforces"
-                contest['id'] = "codeforces_"+strippedData[0].split()[2]
-                contests.append(contest)
-        return contests
+                    contest['duration'] = str(timedelta(
+                        hours=tempDate.hour, minutes=tempDate.minute, seconds=tempDate.second))
+                    contest['end_time'] = str(startTime + timedelta(
+                        hours=tempDate.hour, minutes=tempDate.minute, seconds=tempDate.second))
+                    contest['platform'] = "codeforces"
+                    contest['id'] = "codeforces_"+strippedData[0].split()[2]
+                    contests.append(contest)
+                    return contests
+        except:
+            print('Error retrieving codeforces details')
+            return []
