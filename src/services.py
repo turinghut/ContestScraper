@@ -87,17 +87,20 @@ class ContestsRetreiver:
         contestsJson = []
         codechefContests = self.getContestsfromCodechef()
         for contest in codechefContests:
+            print(contest)
             contestsJson.append(contest)
         codeforcesContests = self.getContestsfromCodeforces()
         for contest in codeforcesContests:
+            print(contest)
             contestsJson.append(contest)
-
+        contestsJson.sort(key=lambda contest: contest['end_time'])
         return contestsJson
 
     def getContestsfromCodechef(self):
         try:
             URL = "https://www.codechef.com/contests"
-            soup = bs(req.get(URL).content, 'lxml')
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            soup = bs(req.get(URL, headers=headers).content, 'lxml')
             allTables = soup.find_all('table', attrs={'class': 'dataTable'})
             presentTables = allTables[0]  # Present table is the first one
             contests = []
@@ -121,7 +124,7 @@ class ContestsRetreiver:
                     contest['platform'] = "codechef"
                     contest['id'] = "codechef_"+strippedData[0]
                     contests.append(contest)
-                    return contests
+            return contests
         except:
             print('Error retrieving codechef details')
             return []
@@ -129,7 +132,8 @@ class ContestsRetreiver:
     def getContestsfromCodeforces(self):
         try:
             URL = "http://codeforces.com/contests"
-            soup = bs(req.get(URL).content, 'lxml')
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            soup = bs(req.get(URL, headers=headers).content, 'lxml')
             allTables = soup.find_all('div', attrs={'class': 'datatable'})
             presentTables = allTables[0]  # Present table is the first one
             contests = []
@@ -157,7 +161,7 @@ class ContestsRetreiver:
                     contest['platform'] = "codeforces"
                     contest['id'] = "codeforces_"+strippedData[0].split()[2]
                     contests.append(contest)
-                    return contests
+            return contests
         except:
             print('Error retrieving codeforces details')
             return []
